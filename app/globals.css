@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --font-montserrat: 'Montserrat', system-ui, sans-serif;
+
+    /* Design system tokens */
+    --white: #FFFFFF;
+    --cream: #FAF7F0;
+    --beige: #F0EBE0;
+    --text: #111111;
+    --muted: #6B6560;
+    --subtle: #9B9490;
+    --orange: #FF6B35;
+    --yellow: #F5C518;
+    --yellow-light: #FDF8DC;
+}
+
+* {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-montserrat);
+    background: #FFFFFF;
+    color: #111111;
+    overflow-x: hidden;
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
