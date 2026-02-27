@@ -188,7 +188,7 @@ export default function CaseStudy() {
 
                     <div className="border-l-[3px] border-yellow pl-7 py-[0.8rem] my-10">
                         <p className="text-[1.08rem] leading-[1.5] font-semibold text-orange italic m-0">
-                            "Teníamos 12.000 contactos y no sabíamos qué hacer con ellos. Laura nos ayudó a convertirlos en clientes reales."
+                            &ldquo;Teníamos 12.000 contactos y no sabíamos qué hacer con ellos. Laura nos ayudó a convertirlos en clientes reales.&rdquo;
                         </p>
                     </div>
 

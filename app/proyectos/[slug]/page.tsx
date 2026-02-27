@@ -498,12 +498,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                         <p className="text-[0.86rem] leading-[1.65] text-white font-medium mb-[1.1rem] relative z-10">
                             {d.ctaText}
                         </p>
-                        <a
+                        <Link
                             href="/#contact"
                             className="block bg-[#111111] text-white py-3 px-4 rounded-full text-[0.8rem] font-bold tracking-[0.04em] hover:bg-[#333] transition-colors relative z-10"
                         >
                             {d.ctaButton}
-                        </a>
+                        </Link>
                     </div>
                 </aside>
             </div>

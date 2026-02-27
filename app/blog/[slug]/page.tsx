@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import BlogNavigation from '@/components/BlogNavigation';
 import ProgressBar from '@/components/ProgressBar';
 import Footer from '@/components/Footer';
@@ -243,12 +244,12 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                                     <p className="text-[0.86rem] leading-[1.7] text-white/90 font-medium mb-5 relative z-10">
                                         {d.ctaText}
                                     </p>
-                                    <a
+                                    <Link
                                         href="/#contact"
                                         className="block bg-[--yellow] text-[--text] py-3 px-4 rounded-full text-[0.82rem] font-bold tracking-[0.04em] text-center hover:bg-[#e0b510] transition-colors relative z-10"
                                     >
                                         {d.ctaButton}
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

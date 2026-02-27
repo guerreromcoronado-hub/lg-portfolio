@@ -90,7 +90,7 @@ export default function BlogArticle() {
                         5 errores que <em className="italic font-light text-orange">arruinan</em> tu tasa de apertura (y cómo corregirlos)
                     </h1>
                     <p className="text-base leading-[1.8] text-muted max-w-[540px] mx-auto mb-10 font-normal">
-                        Una campaña bien escrita empieza mucho antes de hacer clic en "enviar". Si tu open rate no mejora, probablemente estás cometiendo uno de estos errores.
+                        Una campaña bien escrita empieza mucho antes de hacer clic en &ldquo;enviar&rdquo;. Si tu open rate no mejora, probablemente estás cometiendo uno de estos errores.
                     </p>
                     <div className="flex items-center justify-center gap-4 text-[0.78rem] text-subtle font-medium">
                         <div className="w-[34px] h-[34px] rounded-full bg-beige border-2 border-orange/15 flex items-center justify-center text-muted">

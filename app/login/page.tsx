@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { motion } from 'framer-motion';
@@ -120,12 +121,12 @@ export default function LoginPage() {
                     </div>
 
                     <div className="text-center mt-6">
-                        <a
+                        <Link
                             href="/"
                             className="text-sm text-muted hover:text-orange transition-colors inline-flex items-center gap-2"
                         >
                             ← Volver al sitio
-                        </a>
+                        </Link>
                     </div>
                 </motion.div>
             </div>
