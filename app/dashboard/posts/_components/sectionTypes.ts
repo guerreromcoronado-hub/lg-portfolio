@@ -132,6 +132,6 @@ export const buildContent = (
 
 // ─── sectionsFromDB ───────────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export const sectionsFromDB = (dbSections: any[]): Section[] =>
     (dbSections ?? []).map(s => ({ ...s, id: newId() }));

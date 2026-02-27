@@ -22,7 +22,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
     // Pre-process new-format sections into render groups so we can reproduce
     // the original design (process steps grouped under heading, results in dark grid, etc.)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const contentAny = content as any;
     const hasSections = Array.isArray(contentAny.sections);
 
@@ -33,13 +32,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
     const renderBlocks: RenderBlock[] = [];
     if (hasSections) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const secs: any[] = contentAny.sections;
         let si = 0;
         while (si < secs.length) {
             const s = secs[si];
             if (s.type === 'process-step') {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const steps: any[] = [];
                 while (si < secs.length && secs[si].type === 'process-step') {
                     steps.push(secs[si]);
@@ -47,7 +44,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 }
                 renderBlocks.push({ kind: 'process-group', steps });
             } else if (s.type === 'result-item') {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const items: any[] = [];
                 while (si < secs.length && secs[si].type === 'result-item') {
                     items.push(secs[si]);

@@ -147,13 +147,13 @@ export function buildProjectContent(
 
 // ─── sectionsFromProjectDB ────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export function sectionsFromProjectDB(dbContent: any, dbResults?: any): ProjectSection[] {
     if (!dbContent) return [makeProjSection('paragraph')];
 
     // New format: content.sections array
     if (Array.isArray(dbContent.sections) && dbContent.sections.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         return dbContent.sections.map((s: any) => ({
             id: newProjId(),
             type: s.type as ProjectSectionType,
@@ -183,11 +183,11 @@ export function sectionsFromProjectDB(dbContent: any, dbResults?: any): ProjectS
     if (typeof dbContent.challenge === 'string' && dbContent.challenge.trim())
         result.push({ id: newProjId(), type: 'challenge', content: dbContent.challenge });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const processArr: any[] = Array.isArray(dbContent.process)
         ? dbContent.process
         : Array.isArray(dbContent.solution) ? dbContent.solution : [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     processArr.forEach((step: any, i: number) => {
         result.push({
             id: newProjId(), type: 'process-step',
@@ -205,7 +205,7 @@ export function sectionsFromProjectDB(dbContent: any, dbResults?: any): ProjectS
             result.push({ id: newProjId(), type: 'result-item', title: r.title ?? r.label ?? '', description: r.description ?? r.value ?? '' });
     else if (dbResults) {
         if (Array.isArray(dbResults.main))
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             for (const r of dbResults.main as any[])
                 result.push({ id: newProjId(), type: 'result-item', title: String(r.value ?? r.label ?? ''), description: String(r.label ?? '') });
         if (typeof dbResults.summary === 'string' && dbResults.summary.trim())

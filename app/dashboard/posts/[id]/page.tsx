@@ -139,7 +139,6 @@ export default function EditPostPage() {
     const onSubmit = async (data: PostFormData) => {
         setLoading(true);
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const payload: Record<string, any> = {
                 ...data,
                 content: buildContent(sections, { tags, seo: { title: metaTitle, description: metaDesc } }),
