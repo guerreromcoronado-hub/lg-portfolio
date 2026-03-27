@@ -14,8 +14,8 @@ export default function Navigation() {
         { href: '/#about', label: d.about },
         { href: '/#services', label: d.services },
         { href: '/#portfolio', label: d.projects },
-        { href: '/#clients', label: d.clients },
         { href: '/#blog', label: d.blog },
+        { href: '/#clients', label: d.clients },
     ];
 
     return (
