@@ -2,10 +2,14 @@
 
 import DisplayCards from "@/components/ui/display-cards";
 import { useLanguage } from "@/lib/i18n/context";
+import { motion, useInView } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import Image from "next/image";
+import { useRef } from "react";
 
 function WorkedWith() {
+    const ref = useRef<HTMLElement | null>(null);
+    const isInView = useInView(ref, { once: true, margin: "-100px" });
     const { dict } = useLanguage();
     const d = dict.workedWith;
 
@@ -89,7 +93,11 @@ function WorkedWith() {
     ];
 
     return (
-        <section id="clients" className="relative overflow-hidden px-4 py-11 sm:px-6 sm:py-13 md:px-12 md:py-18 lg:px-20 lg:py-22 bg-white">
+        <section
+            id="clients"
+            ref={ref}
+            className="relative overflow-hidden px-4 py-11 sm:px-6 sm:py-13 md:px-12 md:py-18 lg:px-20 lg:py-22 bg-white"
+        >
             <div className="pointer-events-none absolute inset-0" aria-hidden="true">
                 <div className="absolute -left-24 top-8 h-44 w-44 rounded-full bg-yellow/10 blur-3xl sm:-left-28 sm:top-10 sm:h-56 sm:w-56" />
                 <div className="absolute right-[-8rem] top-14 h-56 w-56 rounded-full bg-orange/10 blur-3xl sm:right-[-7rem] sm:top-16 sm:h-72 sm:w-72" />
@@ -97,7 +105,11 @@ function WorkedWith() {
             </div>
 
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[minmax(280px,1fr)_minmax(0,1.35fr)] gap-8 sm:gap-9 lg:gap-12 items-center">
-                <div>
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.6 }}
+                >
                     <span className="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-yellow flex items-center gap-2">
                         <span className="block w-6 h-[2px] bg-yellow" />
                         {d.label}
@@ -111,18 +123,26 @@ function WorkedWith() {
                     </p>
 
                     <div className="mt-5 flex flex-wrap gap-1.5 sm:mt-7 sm:gap-2">
-                        {d.chips.map((chip) => (
-                            <span
+                        {d.chips.map((chip, index) => (
+                            <motion.span
                                 key={chip}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                transition={{ duration: 0.35, delay: 0.08 + index * 0.08 }}
                                 className="rounded-full border border-text/10 bg-white/85 px-3 py-1.5 text-[0.66rem] font-semibold tracking-[0.07em] uppercase text-subtle sm:px-3.5 sm:text-[0.7rem]"
                             >
                                 {chip}
-                            </span>
+                            </motion.span>
                         ))}
                     </div>
-                </div>
+                </motion.div>
 
-                <div className="relative rounded-2xl border border-text/[0.08] bg-white/80 px-2 py-5 shadow-[0_14px_50px_-25px_rgba(22,22,22,0.35)] backdrop-blur-sm sm:rounded-3xl sm:px-3 sm:py-7 md:px-4 lg:px-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 35, scale: 0.98 }}
+                    animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                    transition={{ duration: 0.65, delay: 0.12 }}
+                    className="relative rounded-2xl border border-text/[0.08] bg-white/80 px-2 py-5 shadow-[0_14px_50px_-25px_rgba(22,22,22,0.35)] backdrop-blur-sm sm:rounded-3xl sm:px-3 sm:py-7 md:px-4 lg:px-6"
+                >
                     <div className="pointer-events-none absolute -top-3 left-8 right-8 h-px bg-gradient-to-r from-transparent via-yellow/60 to-transparent" />
                     <div className="w-full max-w-3xl mx-auto">
                         <div className="relative h-[255px] sm:h-[315px] md:h-auto">
@@ -131,7 +151,7 @@ function WorkedWith() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
     );
