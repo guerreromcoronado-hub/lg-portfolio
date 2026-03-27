@@ -26,7 +26,7 @@ export default function About() {
 
                 <div className="relative mt-8 w-full max-w-xs lg:max-w-none aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
                     <Image
-                        src="/LG.png"
+                        src="/LG-About.png"
                         alt="Laura Guerrero"
                         fill
                         className="object-cover object-top"

@@ -5,6 +5,7 @@ import About from '@/components/sections/About';
 import Services from '@/components/sections/Services';
 import Portfolio from '@/components/sections/Portfolio';
 import Blog from '@/components/sections/Blog';
+import WorkedWith from '@/components/sections/WorkedWith';
 import Contact from '@/components/sections/Contact';
 import { getPosts, getProjects, localizePost, localizeProject } from '@/lib/api/content';
 import { getLocale } from '@/lib/i18n/server';
@@ -13,7 +14,10 @@ export default async function Home() {
     const locale = await getLocale();
 
     // Fetch published posts and featured projects
-    const [posts, projects] = await Promise.all([getPosts(), getProjects()]);
+    const [posts, projects] = await Promise.all([
+        getPosts(true, { lightweight: true }),
+        getProjects(true, undefined, { lightweight: true }),
+    ]);
 
     // Localize content based on current language
     const publishedPosts = posts
@@ -34,6 +38,7 @@ export default async function Home() {
                 <Services />
                 <Portfolio projects={featuredProjects} />
                 <Blog posts={publishedPosts} />
+                <WorkedWith />
                 <Contact />
             </main>
             <Footer />

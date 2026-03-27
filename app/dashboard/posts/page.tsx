@@ -10,26 +10,20 @@ import { IconFileText, IconEdit, IconTrash, IconPlay, IconPause, IconEye, IconCl
 
 export default function PostsPage() {
     const supabase = createClient();
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [allPosts, setAllPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
 
     useEffect(() => {
         fetchPosts();
-    }, [filter]);
+    }, []);
 
     const fetchPosts = async () => {
         setLoading(true);
-        let query = supabase
+        const query = supabase
             .from('posts')
             .select('*')
             .order('created_at', { ascending: false });
-
-        if (filter === 'published') {
-            query = query.eq('published', true);
-        } else if (filter === 'draft') {
-            query = query.eq('published', false);
-        }
 
         const { data, error } = await query;
 
@@ -37,10 +31,16 @@ export default function PostsPage() {
             toast.error('Error al cargar posts');
             console.error(error);
         } else {
-            setPosts(data || []);
+            setAllPosts(data || []);
         }
         setLoading(false);
     };
+
+    const posts = filter === 'published'
+        ? allPosts.filter((post) => post.published)
+        : filter === 'draft'
+            ? allPosts.filter((post) => !post.published)
+            : allPosts;
 
     const handleDelete = async (id: string) => {
         if (!confirm('¿Estás segura de eliminar este post?')) return;
@@ -99,7 +99,7 @@ export default function PostsPage() {
                         : 'bg-white text-text hover:bg-cream'
                         }`}
                 >
-                    Todos ({posts.length})
+                    Todos ({allPosts.length})
                 </button>
                 <button
                     onClick={() => setFilter('published')}

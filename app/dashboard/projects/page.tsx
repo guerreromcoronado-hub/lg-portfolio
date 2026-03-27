@@ -10,26 +10,20 @@ import { IconBriefcase, IconEdit, IconTrash, IconPlay, IconPause, IconEye, IconE
 
 export default function ProjectsPage() {
     const supabase = createClient();
-    const [projects, setProjects] = useState<Project[]>([]);
+    const [allProjects, setAllProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
 
     useEffect(() => {
         fetchProjects();
-    }, [filter]);
+    }, []);
 
     const fetchProjects = async () => {
         setLoading(true);
-        let query = supabase
+        const query = supabase
             .from('projects')
             .select('*')
             .order('created_at', { ascending: false });
-
-        if (filter === 'published') {
-            query = query.eq('published', true);
-        } else if (filter === 'draft') {
-            query = query.eq('published', false);
-        }
 
         const { data, error } = await query;
 
@@ -37,10 +31,16 @@ export default function ProjectsPage() {
             toast.error('Error al cargar proyectos');
             console.error(error);
         } else {
-            setProjects(data || []);
+            setAllProjects(data || []);
         }
         setLoading(false);
     };
+
+    const projects = filter === 'published'
+        ? allProjects.filter((project) => project.published)
+        : filter === 'draft'
+            ? allProjects.filter((project) => !project.published)
+            : allProjects;
 
     const handleDelete = async (id: string) => {
         if (!confirm('¿Estás segura de eliminar este proyecto?')) return;
@@ -113,7 +113,7 @@ export default function ProjectsPage() {
                         : 'bg-white text-text hover:bg-cream'
                         }`}
                 >
-                    Todos ({projects.length})
+                    Todos ({allProjects.length})
                 </button>
                 <button
                     onClick={() => setFilter('published')}

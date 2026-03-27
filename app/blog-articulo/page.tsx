@@ -208,7 +208,7 @@ export default function BlogArticle() {
 
                     <div className="bg-cream border-l-[3px] border-orange rounded-r-xl p-[1.6rem] my-10">
                         <h4 className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-orange mb-[0.7rem]">
-                            ↗ Diagnóstico rápido
+                            Diagnóstico rápido
                         </h4>
                         <p className="text-[0.92rem] text-text leading-[1.7] m-0 font-medium">
                             Usa Mail-Tester.com o Google Postmaster Tools para revisar la reputación de tu dominio. Si tu puntuación está por debajo de 7/10, necesitas un plan de warming antes de cualquier otra optimización.

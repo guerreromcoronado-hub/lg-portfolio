@@ -22,7 +22,7 @@ export const metadata = {
 export default async function ProyectosPage() {
     const { locale, dict } = await getServerDictionary();
     const d = dict.projectsPage;
-    const rawProjects = await getProjects();
+    const rawProjects = await getProjects(true, undefined, { lightweight: true });
     const projects = rawProjects.map((p) => localizeProject(p, locale));
 
     return (

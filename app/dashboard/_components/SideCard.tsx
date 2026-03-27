@@ -30,7 +30,7 @@ export function SideCard({
             >
                 <h3 className="text-xs font-bold uppercase tracking-[0.1em] text-subtle">{title}</h3>
                 {collapsible && (
-                    <span className="text-subtle text-xs">{open ? '▲' : '▼'}</span>
+                    <span className="text-subtle text-xs">{open ? 'Ocultar' : 'Mostrar'}</span>
                 )}
             </button>
             {(!collapsible || open) && (

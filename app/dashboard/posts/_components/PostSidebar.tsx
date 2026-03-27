@@ -41,6 +41,7 @@ interface Props {
     setMetaDesc: (d: string) => void;
     slug: string;
     currentSlug?: string;
+    shouldRequireFields: () => boolean;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -54,6 +55,7 @@ export function PostSidebar({
     metaTitle, setMetaTitle,
     metaDesc, setMetaDesc,
     slug, currentSlug = '',
+    shouldRequireFields,
 }: Props) {
     const STATUSES = [
         { value: 'draft' as PublishStatus, label: 'Borrador', hint: 'No visible al público' },
@@ -63,6 +65,8 @@ export function PostSidebar({
 
     return (
         <div className="w-full lg:w-[320px] flex-shrink-0 space-y-4">
+
+            <input type="hidden" {...register('emoji')} />
 
             {/* Estado de publicación */}
             <SideCard title="Estado de publicación">
@@ -102,7 +106,6 @@ export function PostSidebar({
                 ) : (
                     <button type="button" onClick={onCoverClick}
                         className="w-full border-2 border-dashed border-text/10 rounded-lg h-28 flex flex-col items-center justify-center gap-2 hover:border-yellow hover:bg-cream/40 transition-colors text-subtle">
-                        <span className="text-2xl">🖼</span>
                         <span className="text-xs font-semibold">Subir imagen</span>
                     </button>
                 )}
@@ -118,7 +121,9 @@ export function PostSidebar({
 
             {/* Resumen */}
             <SideCard title="Resumen">
-                <textarea {...register('excerpt', { required: true })} rows={3}
+                <textarea {...register('excerpt', {
+                    validate: value => !shouldRequireFields() || Boolean(value?.trim()),
+                })} rows={3}
                     className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow transition-colors resize-none"
                     placeholder="Descripción corta del post (aparece en las cards del blog)..." />
             </SideCard>
@@ -126,18 +131,13 @@ export function PostSidebar({
             {/* Organización */}
             <SideCard title="Organización">
                 <div className="space-y-3">
-                    <div className="grid grid-cols-[52px_1fr] gap-2">
-                        <div>
-                            <label className="block text-[0.65rem] font-bold tracking-wider uppercase text-subtle mb-1">Emoji</label>
-                            <input {...register('emoji')}
-                                className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-1 py-2 text-xl text-center outline-none focus:border-yellow transition-colors" />
-                        </div>
-                        <div>
-                            <label className="block text-[0.65rem] font-bold tracking-wider uppercase text-subtle mb-1">Categoría *</label>
-                            <input {...register('category', { required: true })}
-                                className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow transition-colors"
-                                placeholder="Email Marketing" />
-                        </div>
+                    <div>
+                        <label className="block text-[0.65rem] font-bold tracking-wider uppercase text-subtle mb-1">Categoría *</label>
+                        <input {...register('category', {
+                            validate: value => !shouldRequireFields() || Boolean(value?.trim()),
+                        })}
+                            className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow transition-colors"
+                            placeholder="Email Marketing" />
                     </div>
                     <div>
                         <label className="block text-[0.65rem] font-bold tracking-wider uppercase text-subtle mb-1">Tiempo de lectura</label>
@@ -183,7 +183,7 @@ export function PostSidebar({
                         <label className="block text-[0.65rem] font-bold tracking-wider uppercase text-subtle mb-1">URL (handle)</label>
                         <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[0.65rem] text-subtle font-mono">/blog/</span>
-                            <input {...register('slug', { required: true })}
+                            <input {...register('slug')}
                                 className="w-full bg-cream border-[1.5px] border-transparent rounded-lg pl-10 pr-3 py-2 text-xs font-mono outline-none focus:border-yellow transition-colors"
                                 placeholder="mi-post-url" />
                         </div>

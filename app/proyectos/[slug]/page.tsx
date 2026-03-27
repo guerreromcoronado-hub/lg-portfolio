@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import BlogNavigation from '@/components/BlogNavigation';
 import Footer from '@/components/Footer';
-import { getProjectBySlug, localizeProject } from '@/lib/api/content';
+import { getProjectBySlug, isLiveNow, localizeProject } from '@/lib/api/content';
 import { getServerDictionary } from '@/lib/i18n/server';
 import type { ProjectContent } from '@/lib/types/database';
 import { IconTrendingUp } from '@/components/icons';
@@ -13,12 +13,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     const d = dict.projectDetail;
     const rawProject = await getProjectBySlug(slug);
 
-    if (!rawProject || !rawProject.published) {
+    if (!rawProject || !isLiveNow(rawProject)) {
         notFound();
     }
 
     const project = localizeProject(rawProject, locale);
     const content = project.content as ProjectContent;
+    const metricEntries = project.metrics && typeof project.metrics === 'object'
+        ? Object.entries(project.metrics as Record<string, string>)
+            .map(([label, value]) => [String(label).trim(), String(value).trim()] as const)
+            .filter(([label, value]) => label.length > 0 && value.length > 0)
+        : [];
 
     // Pre-process new-format sections into render groups so we can reproduce
     // the original design (process steps grouped under heading, results in dark grid, etc.)
@@ -56,6 +61,22 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             }
         }
     }
+
+    const getEmbedUrl = (url: string) => {
+        try {
+            const u = new URL(url);
+            if (u.hostname.includes('youtube.com') || u.hostname.includes('youtu.be')) {
+                const vid = u.searchParams.get('v') || u.pathname.split('/').pop();
+                return `https://www.youtube.com/embed/${vid}`;
+            }
+            if (u.hostname.includes('vimeo.com')) {
+                return `https://player.vimeo.com/video/${u.pathname.split('/').pop()}`;
+            }
+        } catch {
+            return null;
+        }
+        return null;
+    };
 
     return (
         <>
@@ -124,17 +145,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
             {/* ─── COVER ─── */}
             <div className="mx-4 md:mx-12 lg:mx-20">
-                <div className="h-[400px] rounded-[18px] overflow-hidden relative">
+                <div className="rounded-[18px] overflow-hidden relative">
                     {project.cover_image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={project.cover_image}
                             alt={project.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-auto object-contain max-h-[600px]"
                         />
                     ) : (
                         <div
-                            className="h-full flex items-center justify-center"
+                            className="min-h-[400px] h-full flex items-center justify-center"
                             style={{
                                 background:
                                     'radial-gradient(ellipse at 28% 55%, rgba(245,197,24,0.45) 0%, transparent 55%), radial-gradient(ellipse at 72% 25%, rgba(245,160,32,0.35) 0%, transparent 50%), radial-gradient(ellipse at 85% 75%, rgba(232,114,74,0.25) 0%, transparent 45%), var(--beige)',
@@ -284,6 +305,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                                             </h2>
                                         ) : null;
 
+                                    case 'heading3':
+                                        return s.content ? (
+                                            <h3 key={bi} className="text-[1.05rem] font-bold text-[--text] mt-8 mb-3">
+                                                {String(s.content)}
+                                            </h3>
+                                        ) : null;
+
                                     case 'quote':
                                         return s.content ? (
                                             <div key={bi} className="border-l-[3px] border-[--yellow] pl-7 py-3 my-10">
@@ -298,7 +326,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                                             <div key={bi} className="bg-[--cream] border-l-[3px] border-[--orange] rounded-r-xl p-6 my-8">
                                                 {s.title && (
                                                     <h4 className="text-[0.7rem] font-bold tracking-[0.14em] uppercase text-[--orange] mb-3">
-                                                        ↗ {String(s.title)}
+                                                        {String(s.title)}
                                                     </h4>
                                                 )}
                                                 <p className="text-[0.92rem] text-[--text] leading-[1.8] font-medium">
@@ -312,6 +340,85 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                                             <p key={bi} className="text-[0.97rem] leading-[1.9] text-[--text] mb-5">
                                                 {String(s.content)}
                                             </p>
+                                        ) : null;
+
+                                    case 'numbered-list':
+                                        return Array.isArray(s.items) && s.items.length > 0 ? (
+                                            <ol key={bi} className="my-6 flex flex-col gap-2">
+                                                {s.items.map((item: string, index: number) => (
+                                                    <li key={index} className="flex items-start gap-3 text-[0.97rem] text-[--text] leading-[1.8]">
+                                                        <span className="w-6 h-6 rounded-full bg-[--yellow-light] text-[--text] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                            {index + 1}
+                                                        </span>
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                        ) : null;
+
+                                    case 'callout':
+                                        return s.content ? (
+                                            <div key={bi} className="my-8 rounded-xl border border-black/[0.08] bg-[--cream] p-5">
+                                                <p className="text-[0.92rem] text-[--text] leading-[1.8] font-medium">
+                                                    {String(s.content)}
+                                                </p>
+                                            </div>
+                                        ) : null;
+
+                                    case 'image':
+                                        return s.url ? (
+                                            <figure key={bi} className="my-8">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={String(s.url)}
+                                                    alt={String(s.alt ?? project.title)}
+                                                    className="w-full h-auto rounded-xl object-contain max-h-[560px]"
+                                                />
+                                                {s.caption && (
+                                                    <figcaption className="mt-2 text-xs text-[--subtle] leading-relaxed">
+                                                        {String(s.caption)}
+                                                    </figcaption>
+                                                )}
+                                            </figure>
+                                        ) : null;
+
+                                    case 'video':
+                                        return s.url ? (
+                                            <div key={bi} className="my-8">
+                                                {getEmbedUrl(String(s.url)) ? (
+                                                    <div className="aspect-video rounded-xl overflow-hidden bg-black">
+                                                        <iframe
+                                                            src={getEmbedUrl(String(s.url)) || ''}
+                                                            className="w-full h-full"
+                                                            allowFullScreen
+                                                            title={String(s.caption || 'Video')}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <a href={String(s.url)} target="_blank" rel="noopener noreferrer"
+                                                        className="text-[--orange] text-sm font-semibold hover:underline">
+                                                        Ver video
+                                                    </a>
+                                                )}
+                                                {s.caption && (
+                                                    <p className="mt-2 text-xs text-[--subtle] leading-relaxed">{String(s.caption)}</p>
+                                                )}
+                                            </div>
+                                        ) : null;
+
+                                    case 'divider':
+                                        return <div key={bi} className="my-10 border-t border-black/[0.08]" />;
+
+                                    case 'code':
+                                        return s.content ? (
+                                            <pre key={bi} className="my-8 bg-[#111111] text-[#f1f1f1] rounded-xl p-4 overflow-x-auto text-xs leading-relaxed">
+                                                <code>{String(s.content)}</code>
+                                            </pre>
+                                        ) : null;
+
+                                    case 'html':
+                                        return s.content ? (
+                                            <div key={bi} className="my-8" dangerouslySetInnerHTML={{ __html: String(s.content) }} />
                                         ) : null;
 
                                     case 'learning':
@@ -454,20 +561,21 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                     )}
 
                     {/* Metrics */}
-                    {project.metrics && Object.keys(project.metrics).length > 0 && (
+                    {metricEntries.length > 0 && (
                         <div className="bg-white rounded-[14px] p-[1.6rem] border border-black/[0.08]">
                             <h4 className="text-[0.65rem] font-bold tracking-[0.16em] uppercase text-[--subtle] mb-5">
                                 {d.keyMetrics}
                             </h4>
-                            <div>
-                                {Object.entries(project.metrics as Record<string, string>).map(
-                                    ([key, value], i, arr) => (
-                                        <div
-                                            key={i}
-                                            className={`flex justify-between items-center py-2.5 text-[0.82rem] ${i < arr.length - 1 ? 'border-b border-black/[0.06]' : ''}`}
-                                        >
-                                            <span className="text-[--muted]">{key}</span>
-                                            <span className="font-bold text-[--text]">{value}</span>
+                            <div className="grid gap-4 auto-rows-max">
+                                {metricEntries.map(
+                                    ([label, value], i) => (
+                                        <div key={i} className="flex items-baseline justify-between gap-3 pb-2 border-b border-black/[0.05]">
+                                            <p className="text-[0.7rem] leading-snug text-[--muted] break-words flex-1">
+                                                {label}
+                                            </p>
+                                            <p className="text-[1.2rem] leading-none font-bold text-[--text] text-right" style={{ minWidth: '80px' }}>
+                                                {value}
+                                            </p>
                                         </div>
                                     )
                                 )}

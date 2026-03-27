@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
-import { IconChart, IconFileText, IconBriefcase } from '@/components/icons';
+import { IconChart, IconFileText, IconBriefcase, IconUser } from '@/components/icons';
 
 export default function DashboardLayout({
     children,
@@ -77,6 +77,12 @@ export default function DashboardLayout({
                             className="flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium text-text hover:bg-cream transition-colors"
                         >
                             <IconBriefcase size={16} className="text-orange" /> Proyectos
+                        </Link>
+                        <Link
+                            href="/dashboard/security"
+                            className="flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium text-text hover:bg-cream transition-colors"
+                        >
+                            <IconUser size={16} className="text-orange" /> Seguridad
                         </Link>
                     </nav>
 

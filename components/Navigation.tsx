@@ -14,6 +14,7 @@ export default function Navigation() {
         { href: '/#about', label: d.about },
         { href: '/#services', label: d.services },
         { href: '/#portfolio', label: d.projects },
+        { href: '/#clients', label: d.clients },
         { href: '/#blog', label: d.blog },
     ];
 
@@ -50,7 +51,7 @@ export default function Navigation() {
                             className="text-[0.75rem] font-bold tracking-[0.1em] text-muted/70 border border-muted/25 px-3 py-[0.3rem] rounded-full hover:border-orange hover:text-orange transition-all"
                             aria-label="Switch language"
                         >
-                            {locale === 'es' ? 'EN' : 'ES'}
+                            {locale === 'es' ? 'ES' : 'EN'}
                         </button>
                     </li>
                     <li>
@@ -70,7 +71,7 @@ export default function Navigation() {
                         className="text-[0.75rem] font-bold tracking-[0.1em] text-muted/70 border border-muted/25 px-3 py-[0.3rem] rounded-full hover:border-orange hover:text-orange transition-all"
                         aria-label="Switch language"
                     >
-                        {locale === 'es' ? 'EN' : 'ES'}
+                        {locale === 'es' ? 'ES' : 'EN'}
                     </button>
                     <button
                         onClick={() => setMenuOpen(!menuOpen)}

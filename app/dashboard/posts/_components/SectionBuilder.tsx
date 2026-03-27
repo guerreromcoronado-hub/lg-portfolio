@@ -89,7 +89,7 @@ export function AddSectionPicker({ onAdd }: { onAdd: (type: SectionType) => void
             </button>
 
             {open && (
-                <div className="absolute left-0 right-0 mt-2 z-20 bg-white rounded-xl shadow-2xl border border-text/[0.08] p-4 space-y-4">
+                <div className="mt-2 z-50 bg-white rounded-xl shadow-2xl border border-text/[0.08] p-4 space-y-4 max-h-[65vh] overflow-y-auto overscroll-contain">
                     {BLOCK_GROUPS.map(group => {
                         const types = SECTION_TYPES_META.filter(t => t.group === group);
                         return (

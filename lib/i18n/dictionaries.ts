@@ -5,6 +5,7 @@ export const dictionaries = {
             services: 'Servicios',
             projects: 'Proyectos',
             blog: 'Blog',
+            clients: 'Clientes',
             contact: 'Hablemos →',
         },
         hero: {
@@ -23,9 +24,9 @@ export const dictionaries = {
             p1: 'Soy Laura Guerrero, comunicadora social con experiencia en estrategia digital. Me especializo en conectar marcas con sus audiencias a través de contenido estratégico, campañas de email y optimización para buscadores.',
             p2: 'Creo que el buen marketing no se trata de volumen, sino de relevancia.',
             stats: [
-                { num: '3+', label: 'Años de experiencia' },
-                { num: '15+', label: 'Proyectos completados' },
-                { num: '.co', label: 'lauraguerrero.co' },
+                { num: '4+', label: 'Años de experiencia' },
+                { num: '75K', label: 'Lectores mensuales' },
+                { num: '+200K', label: 'Email revenue' },
             ],
         },
         services: {
@@ -38,7 +39,7 @@ export const dictionaries = {
                     num: '01',
                     title: 'Email Marketing',
                     description:
-                        'Estrategia, diseño y automatización de campañas que nutren leads y aumentan conversiones.',
+                        'Estrategia, diseño y automatización de campañas que generan leads y los convierten en clientes.',
                 },
                 {
                     num: '02',
@@ -64,6 +65,16 @@ export const dictionaries = {
             label: 'Blog',
             heading: 'Ideas para crecer en digital',
             viewAll: 'Ver todos →',
+        },
+        workedWith: {
+            label: 'Clientes',
+            heading1: 'Marcas con las que he colaborado',
+            heading2: 'en estrategia y crecimiento digital',
+            subtitle:
+                'Cada colaboración combina estrategia, ejecución y seguimiento para convertir ideas en resultados medibles.',
+            clientTag: 'Cliente',
+            partnerTag: 'Socio de marca',
+            chips: ['Estrategia', 'E-commerce', 'Email', 'SEO'],
         },
         contact: {
             label: 'Contacto',
@@ -142,6 +153,7 @@ export const dictionaries = {
             services: 'Services',
             projects: 'Projects',
             blog: 'Blog',
+            clients: 'Clients',
             contact: "Let's talk →",
         },
         hero: {
@@ -160,9 +172,9 @@ export const dictionaries = {
             p1: "I'm Laura Guerrero, a social communicator with experience in digital strategy. I specialize in connecting brands with their audiences through strategic content, email campaigns, and search engine optimization.",
             p2: 'I believe great marketing is not about volume, but about relevance.',
             stats: [
-                { num: '3+', label: 'Years of experience' },
-                { num: '15+', label: 'Projects completed' },
-                { num: '.co', label: 'lauraguerrero.co' },
+                { num: '4+', label: 'Years of Experience' },
+                { num: '75K', label: 'Monthly readers' },
+                { num: '+200k', label: 'Email revenue' },
             ],
         },
         services: {
@@ -175,7 +187,7 @@ export const dictionaries = {
                     num: '01',
                     title: 'Email Marketing',
                     description:
-                        'Strategy, design and campaign automation that nurtures leads and boosts conversions.',
+                        'Strategy, design and campaign automation that nurtures leads and boosts conversions',
                 },
                 {
                     num: '02',
@@ -201,6 +213,16 @@ export const dictionaries = {
             label: 'Blog',
             heading: 'Ideas to grow in digital',
             viewAll: 'View all →',
+        },
+        workedWith: {
+            label: 'Clients',
+            heading1: 'Brands I have collaborated with',
+            heading2: 'on strategy and digital growth',
+            subtitle:
+                'Each collaboration combines strategy, execution, and follow-through to turn ideas into measurable outcomes.',
+            clientTag: 'Client',
+            partnerTag: 'Brand partner',
+            chips: ['Strategy', 'E-commerce', 'Email', 'SEO'],
         },
         contact: {
             label: 'Contact',

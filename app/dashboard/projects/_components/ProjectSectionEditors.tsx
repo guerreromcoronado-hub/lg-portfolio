@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { ProjectSection } from './projectSectionTypes';
 
 /**
@@ -60,7 +61,7 @@ export function HighlightEditor({ s, onChange }: EP) {
         <div className="space-y-3 border-l-4 border-orange pl-4">
             <input value={s.title ?? ''} onChange={e => onChange({ ...s, title: e.target.value })}
                 className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-4 py-2 text-sm font-bold uppercase tracking-wider outline-none focus:border-yellow transition-colors"
-                placeholder="↗ Insight clave" />
+                placeholder="Insight clave" />
             <textarea value={s.content ?? ''} onChange={e => onChange({ ...s, content: e.target.value })} rows={3}
                 className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-4 py-3 text-sm outline-none focus:border-yellow transition-colors resize-none"
                 placeholder="Detalle del insight o consejo aplicado en este proyecto..." />
@@ -123,7 +124,7 @@ export function LearningEditor({ s, onChange }: EP) {
         <div className="border-l-4 border-purple-400 pl-4">
             <textarea value={s.content ?? ''} onChange={e => onChange({ ...s, content: e.target.value })} rows={3}
                 className="w-full bg-[#F5F0FF] border-[1.5px] border-transparent rounded-lg px-4 py-3 text-sm outline-none focus:border-yellow transition-colors resize-none"
-                placeholder="💡 Qué aprendiste o qué harías diferente..." />
+                placeholder="Qué aprendiste o qué harías diferente..." />
         </div>
     );
 }
@@ -163,10 +164,10 @@ export function NumberedListEditor({ s, onChange }: EP) {
 // ─── Callout ─────────────────────────────────────────────────────────────────
 
 const CALLOUT_VARIANTS = [
-    { key: 'tip', label: 'Tip', bg: 'bg-emerald-50', border: 'border-emerald-400', text: 'text-emerald-700', icon: '💡' },
-    { key: 'info', label: 'Info', bg: 'bg-blue-50', border: 'border-blue-400', text: 'text-blue-700', icon: 'ℹ' },
-    { key: 'warning', label: 'Atención', bg: 'bg-yellow/10', border: 'border-yellow', text: 'text-amber-700', icon: '⚠' },
-    { key: 'danger', label: 'Peligro', bg: 'bg-red-50', border: 'border-red-400', text: 'text-red-700', icon: '🚨' },
+    { key: 'tip', label: 'Tip', bg: 'bg-emerald-50', border: 'border-emerald-400', text: 'text-emerald-700', icon: 'TIP' },
+    { key: 'info', label: 'Info', bg: 'bg-blue-50', border: 'border-blue-400', text: 'text-blue-700', icon: 'INFO' },
+    { key: 'warning', label: 'Atención', bg: 'bg-yellow/10', border: 'border-yellow', text: 'text-amber-700', icon: 'WARN' },
+    { key: 'danger', label: 'Peligro', bg: 'bg-red-50', border: 'border-red-400', text: 'text-red-700', icon: 'ALERT' },
 ];
 
 export function CalloutEditor({ s, onChange }: EP) {
@@ -191,15 +192,49 @@ export function CalloutEditor({ s, onChange }: EP) {
 // ─── Image ────────────────────────────────────────────────────────────────────
 
 export function ProjImageEditor({ s, onChange }: EP) {
+    const fileRef = useRef<HTMLInputElement>(null);
+
+    const handleFile = (file: File | null) => {
+        if (!file) {
+            onChange({ ...s, url: '' });
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = e => onChange({ ...s, url: e.target?.result as string });
+        reader.readAsDataURL(file);
+    };
+
+    const preview = s.url ? s.url : null;
+
     return (
-        <div className="space-y-2">
-            <input value={s.url ?? ''} onChange={e => onChange({ ...s, url: e.target.value })}
-                className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow font-mono transition-colors"
-                placeholder="https://... URL de la imagen" />
-            {s.url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.url} alt={s.alt ?? ''} className="w-full rounded-lg object-cover max-h-48" />
+        <div className="space-y-3">
+            {preview ? (
+                <div className="relative rounded-xl overflow-hidden group">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={preview} alt={s.alt ?? ''} className="w-full max-h-64 object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                        <button type="button" onClick={() => fileRef.current?.click()}
+                            className="bg-white text-text text-xs font-bold px-4 py-2 rounded-full">↻ Cambiar</button>
+                        <button type="button" onClick={() => handleFile(null)}
+                            className="bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full">× Quitar</button>
+                    </div>
+                </div>
+            ) : (
+                <div className="space-y-2">
+                    <button type="button" onClick={() => fileRef.current?.click()}
+                        className="w-full border-2 border-dashed border-text/10 rounded-xl h-32 flex flex-col items-center justify-center gap-2 hover:border-yellow hover:bg-cream/40 transition-colors text-subtle">
+                        <span className="text-xs font-semibold">Haz clic para subir imagen</span>
+                    </button>
+                    <input value={s.url ?? ''} onChange={e => onChange({ ...s, url: e.target.value })}
+                        className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-3 py-2 text-xs font-mono outline-none focus:border-yellow transition-colors"
+                        placeholder="O pega una URL: https://..." />
+                </div>
             )}
+
+            <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => handleFile(e.target.files?.[0] ?? null)} />
+
             <div className="grid grid-cols-2 gap-2">
                 <input value={s.alt ?? ''} onChange={e => onChange({ ...s, alt: e.target.value })}
                     className="bg-cream border-[1.5px] border-transparent rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow transition-colors"

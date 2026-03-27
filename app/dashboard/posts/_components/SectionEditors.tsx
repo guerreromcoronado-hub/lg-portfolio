@@ -110,7 +110,7 @@ export function HighlightEditor({ section, onChange }: { section: Section; onCha
                 value={section.title ?? ''}
                 onChange={e => onChange({ ...section, title: e.target.value })}
                 className="w-full bg-cream border-[1.5px] border-transparent rounded-lg px-4 py-2 text-sm font-bold uppercase tracking-wider outline-none focus:border-yellow transition-colors"
-                placeholder="↗ Diagnóstico rápido"
+                placeholder="Diagnóstico rápido"
             />
             <textarea
                 value={section.content ?? ''}
@@ -126,10 +126,10 @@ export function HighlightEditor({ section, onChange }: { section: Section; onCha
 // ─── Callout ─────────────────────────────────────────────────────────────────
 
 export const CALLOUT_VARIANTS = [
-    { value: 'tip', label: 'Tip', colors: 'bg-emerald-50 text-emerald-800', border: 'border-emerald-400', icon: '💡' },
-    { value: 'info', label: 'Info', colors: 'bg-blue-50 text-blue-800', border: 'border-blue-400', icon: 'ℹ️' },
-    { value: 'warning', label: 'Warning', colors: 'bg-amber-50 text-amber-800', border: 'border-amber-400', icon: '⚠️' },
-    { value: 'danger', label: 'Peligro', colors: 'bg-red-50 text-red-800', border: 'border-red-400', icon: '🚨' },
+    { value: 'tip', label: 'Tip', colors: 'bg-emerald-50 text-emerald-800', border: 'border-emerald-400', icon: 'TIP' },
+    { value: 'info', label: 'Info', colors: 'bg-blue-50 text-blue-800', border: 'border-blue-400', icon: 'INFO' },
+    { value: 'warning', label: 'Warning', colors: 'bg-amber-50 text-amber-800', border: 'border-amber-400', icon: 'WARN' },
+    { value: 'danger', label: 'Peligro', colors: 'bg-red-50 text-red-800', border: 'border-red-400', icon: 'ALERT' },
 ];
 
 export function CalloutEditor({ section, onChange }: { section: Section; onChange: (s: Section) => void }) {
@@ -190,7 +190,6 @@ export function ImageEditor({ section, onChange }: { section: Section; onChange:
                 <div className="space-y-2">
                     <button type="button" onClick={() => fileRef.current?.click()}
                         className="w-full border-2 border-dashed border-text/10 rounded-xl h-32 flex flex-col items-center justify-center gap-2 hover:border-yellow hover:bg-cream/40 transition-colors text-subtle">
-                        <span className="text-3xl">🖼</span>
                         <span className="text-xs font-semibold">Haz clic para subir imagen</span>
                     </button>
                     <input
@@ -303,7 +302,7 @@ export function HtmlEditor({ section, onChange }: { section: Section; onChange: 
                 className="w-full bg-slate-50 border-[1.5px] border-slate-200 rounded-lg px-4 py-3 text-xs font-mono text-slate-700 outline-none focus:border-yellow transition-colors resize-y"
                 placeholder="<div>Tu HTML personalizado aquí...</div>"
             />
-            <p className="text-xs text-subtle">⚠️ El HTML se renderizará tal cual en el artículo.</p>
+            <p className="text-xs text-subtle">Advertencia: El HTML se renderizará tal cual en el artículo.</p>
         </div>
     );
 }

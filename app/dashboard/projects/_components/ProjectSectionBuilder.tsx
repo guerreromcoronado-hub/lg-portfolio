@@ -94,7 +94,7 @@ export function AddProjectSectionPicker({ onAdd }: { onAdd: (type: ProjectSectio
             </button>
 
             {open && (
-                <div className="absolute left-0 right-0 mt-2 z-20 bg-white rounded-xl shadow-xl border border-text/[0.08] p-4 space-y-4">
+                <div className="mt-2 z-50 bg-white rounded-xl shadow-xl border border-text/[0.08] p-4 space-y-4 max-h-[65vh] overflow-y-auto overscroll-contain">
                     {PROJ_BLOCK_GROUPS.map(group => {
                         const types = group.items
                             .map(t => PROJ_SECTION_TYPES.find(m => m.type === t)!)

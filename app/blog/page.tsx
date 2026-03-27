@@ -22,7 +22,7 @@ export const metadata = {
 export default async function BlogPage() {
     const { locale, dict } = await getServerDictionary();
     const d = dict.blogPage;
-    const rawPosts = await getPosts();
+    const rawPosts = await getPosts(true, { lightweight: true });
     const posts = rawPosts.map((p) => localizePost(p, locale));
 
     return (

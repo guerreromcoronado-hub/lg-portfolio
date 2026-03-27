@@ -3,7 +3,7 @@ import Link from 'next/link';
 import BlogNavigation from '@/components/BlogNavigation';
 import ProgressBar from '@/components/ProgressBar';
 import Footer from '@/components/Footer';
-import { getPostBySlug, localizePost } from '@/lib/api/content';
+import { getPostBySlug, isLiveNow, localizePost } from '@/lib/api/content';
 import { getServerDictionary } from '@/lib/i18n/server';
 import { IconUser, IconPenLine } from '@/components/icons';
 
@@ -13,7 +13,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
     const d = dict.blogArticle;
     const rawPost = await getPostBySlug(slug);
 
-    if (!rawPost || !rawPost.published) {
+    if (!rawPost || !isLiveNow(rawPost)) {
         notFound();
     }
 
@@ -24,6 +24,11 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             type: string;
             content?: string;
             title?: string;
+            url?: string;
+            caption?: string;
+            alt?: string;
+            variant?: string;
+            language?: string;
             items?: Array<{
                 number: string;
                 title: string;
@@ -31,6 +36,22 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                 fix: string;
             }>;
         }>;
+    };
+
+    const getEmbedUrl = (url: string) => {
+        try {
+            const u = new URL(url);
+            if (u.hostname.includes('youtube.com') || u.hostname.includes('youtu.be')) {
+                const vid = u.searchParams.get('v') || u.pathname.split('/').pop();
+                return `https://www.youtube.com/embed/${vid}`;
+            }
+            if (u.hostname.includes('vimeo.com')) {
+                return `https://player.vimeo.com/video/${u.pathname.split('/').pop()}`;
+            }
+        } catch {
+            return null;
+        }
+        return null;
     };
 
     return (
@@ -73,16 +94,16 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
             {/* Cover Image */}
             <section className="mx-4 md:mx-12 lg:mx-20 mb-10">
-                <div className="h-[340px] rounded-2xl overflow-hidden relative">
+                <div className="rounded-2xl overflow-hidden relative">
                     {post.cover_image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={post.cover_image}
                             alt={post.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-auto object-contain max-h-[600px]"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(ellipse_at_30%_55%,rgba(245,197,24,0.4)_0%,transparent_55%),radial-gradient(ellipse_at_75%_25%,rgba(245,160,32,0.3)_0%,transparent_50%),radial-gradient(ellipse_at_80%_80%,rgba(232,114,74,0.2)_0%,transparent_45%),var(--beige)]">
+                        <div className="w-full min-h-[400px] flex items-center justify-center bg-[radial-gradient(ellipse_at_30%_55%,rgba(245,197,24,0.4)_0%,transparent_55%),radial-gradient(ellipse_at_75%_25%,rgba(245,160,32,0.3)_0%,transparent_50%),radial-gradient(ellipse_at_80%_80%,rgba(232,114,74,0.2)_0%,transparent_45%),var(--beige)]">
                             <IconPenLine size={72} className="text-orange/30" strokeWidth={1} />
                         </div>
                     )}
@@ -110,6 +131,13 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                                         <h2 className="text-[1.35rem] font-bold text-[--text] mt-11 mb-4 first:mt-0">
                                             {section.content}
                                         </h2>
+                                    )}
+
+                                    {/* Heading 3 */}
+                                    {section.type === 'heading3' && typeof section.content === 'string' && (
+                                        <h3 className="text-[1.05rem] font-bold text-[--text] mt-8 mb-3">
+                                            {section.content}
+                                        </h3>
                                     )}
 
                                     {/* Quote */}
@@ -140,16 +168,100 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
                                         </ul>
                                     )}
 
+                                    {/* Numbered List */}
+                                    {section.type === 'numbered-list' && section.items && (
+                                        <ol className="my-6 flex flex-col gap-2">
+                                            {(section.items as unknown as string[]).map((item, index) => (
+                                                <li key={index} className="flex items-start gap-3 text-[0.97rem] text-[--text] leading-[1.8]">
+                                                    <span className="w-6 h-6 rounded-full bg-[--yellow-light] text-[--text] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        {index + 1}
+                                                    </span>
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ol>
+                                    )}
+
                                     {/* Highlight */}
                                     {section.type === 'highlight' && typeof section.content === 'string' && (
                                         <div className="bg-[--cream] border-l-[3px] border-[--orange] rounded-r-xl p-6 my-10">
                                             <h4 className="text-[0.7rem] font-bold tracking-[0.14em] uppercase text-[--orange] mb-3">
-                                                ↗ {section.title}
+                                                {section.title}
                                             </h4>
                                             <p className="text-[0.92rem] text-[--text] leading-[1.8] font-medium">
                                                 {section.content}
                                             </p>
                                         </div>
+                                    )}
+
+                                    {/* Callout */}
+                                    {section.type === 'callout' && typeof section.content === 'string' && (
+                                        <div className="my-8 rounded-xl border border-black/[0.08] bg-[--cream] p-5">
+                                            <p className="text-[0.92rem] text-[--text] leading-[1.8] font-medium">
+                                                {section.content}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Image */}
+                                    {section.type === 'image' && section.url && (
+                                        <figure className="my-8">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={section.url}
+                                                alt={section.alt || post.title}
+                                                className="w-full h-auto rounded-xl object-contain max-h-[560px]"
+                                            />
+                                            {section.caption && (
+                                                <figcaption className="mt-2 text-xs text-[--subtle] leading-relaxed">
+                                                    {section.caption}
+                                                </figcaption>
+                                            )}
+                                        </figure>
+                                    )}
+
+                                    {/* Video */}
+                                    {section.type === 'video' && section.url && (
+                                        <div className="my-8">
+                                            {getEmbedUrl(section.url) ? (
+                                                <div className="aspect-video rounded-xl overflow-hidden bg-black">
+                                                    <iframe
+                                                        src={getEmbedUrl(section.url) || ''}
+                                                        className="w-full h-full"
+                                                        allowFullScreen
+                                                        title={section.caption || 'Video'}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <a href={section.url} target="_blank" rel="noopener noreferrer"
+                                                    className="text-[--orange] text-sm font-semibold hover:underline">
+                                                    Ver video
+                                                </a>
+                                            )}
+                                            {section.caption && (
+                                                <p className="mt-2 text-xs text-[--subtle] leading-relaxed">{section.caption}</p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Divider */}
+                                    {section.type === 'divider' && (
+                                        <div className="my-10 border-t border-black/[0.08]" />
+                                    )}
+
+                                    {/* Code */}
+                                    {section.type === 'code' && typeof section.content === 'string' && (
+                                        <pre className="my-8 bg-[#111111] text-[#f1f1f1] rounded-xl p-4 overflow-x-auto text-xs leading-relaxed">
+                                            <code>{section.content}</code>
+                                        </pre>
+                                    )}
+
+                                    {/* HTML */}
+                                    {section.type === 'html' && typeof section.content === 'string' && (
+                                        <div
+                                            className="my-8"
+                                            dangerouslySetInnerHTML={{ __html: section.content }}
+                                        />
                                     )}
 
                                     {/* Error List */}
